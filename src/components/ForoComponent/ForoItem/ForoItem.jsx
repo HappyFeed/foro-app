@@ -11,16 +11,17 @@ import CreateIcon from '@mui/icons-material/Create';
 import TextField from '@mui/material/TextField';
 
 
-const ForoItem = ({ id, title }) => {
+const ForoItem = ({ id, message }) => {
   const state = useContext(AppContext);
 
   const [isUpdating, setIsUpdating] = useState(false);
-  const [text, setText] = useState(title);
+  const [text, setText] = useState(message);
 
 
   const handleUpdate = () => {
     setIsUpdating(false);
-    state.setTaskTitle(id, title);
+    console.log(message)
+    state.setMessageText(id, message);
   };
 
   return (
@@ -51,7 +52,7 @@ const ForoItem = ({ id, title }) => {
             <CreateIcon />
           </IconButton>
         )}
-        <IconButton color="secondary" onClick={() => state.deleteTask(id)}>
+        <IconButton color="secondary" onClick={() => state.deleteMessage(id)}>
           <DeleteIcon />
         </IconButton>
 

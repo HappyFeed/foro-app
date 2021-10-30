@@ -1,63 +1,69 @@
 import React, { useState } from "react";
 import * as uuid from "uuid";
+import db from "../config/firebase/firebase"
+import { collection, deleteDoc, doc , setDoc, getDocs } from "firebase/firestore";
 
 const AppContext = React.createContext();
 
 export const AppContextWrapper = (props) => {
-  const [tasks, setTasks] = useState([]);
+  const [messages, setMessages] = useState([]);
 
-  const setTaskStatus = (id, status) => {
-    const tasjsUpdated = tasks.map((task) => {
-      if (task.id === id) {
+  const getMessages = async() => {
+    const datos = await getDocs(collection(db,'messages'))
+    const messages = []
+    datos.forEach((documento) => {
+      messages.push(documento.data())
+    })
+    setMessages(messages)
+  }
+
+  const setMessageText = (id, newMessage) => {
+    const messageUpdate = messages.map((message) => {
+      if (message.id === id) {
         return {
-          ...task,
-          completed: status,
+          ...message,
+          textMessage: newMessage,
         };
       }
-      return task;
+      return message;
     });
-
-    setTasks(tasjsUpdated);
+    postBD(messageUpdate.find( element => element.id === id));
   };
 
-  const setTaskTitle = (id, newTitle) => {
-    const tasjsUpdated = tasks.map((task) => {
-      if (task.id === id) {
-        return {
-          ...task,
-          title: newTitle,
-        };
-      }
-      return task;
-    });
+  const postBD = async(message) =>{
+    try {
+      const docRef = await setDoc(collection(db, "messages", message.id), 
+      {message});
+      console.log("Document written with ID: ", docRef.id);
+      getMessages();
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  }
 
-    setTasks(tasjsUpdated);
-  };
 
-  const saveTask = (title) => {
+  const saveMessage = (textMessage) => {
     const newTask = {
       id: uuid.v1(),
-      completed: false,
       userId: uuid.v1(),
-      title,
+      textMessage,
     };
 
-    const newTasks = [...tasks, newTask];
-    setTasks(newTasks);
+    postBD(newTask);
   };
 
-  const deleteTask = (taskId) => {
-    const taskArr = tasks.filter((task) => task.id !== taskId);
-    setTasks(taskArr);
+
+
+  const deleteMessage = async (messageId) => {
+    await deleteDoc(doc(db, "messages", messageId));
   };
 
   const state = {
-    tasks,
-    setTasks,
-    setTaskTitle,
-    setTaskStatus,
-    saveTask,
-    deleteTask,
+    messages,
+    setMessages,
+    setMessageText,
+    saveMessage,
+    deleteMessage,
   };
 
   return (

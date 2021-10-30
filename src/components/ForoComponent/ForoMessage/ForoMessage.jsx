@@ -10,7 +10,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Collapse from '@mui/material/Collapse';
 import Divider from '@mui/material/Divider';
 
-const ForoContainer = ({message}) => {
+const ForoContainer = ({data}) => {
   const state = useContext(AppContext);
   const [open, setOpen] = React.useState(false);
 
@@ -18,7 +18,8 @@ const ForoContainer = ({message}) => {
   return (
     <div className="taskContainer">
         <Box>
-            <ForoItem />
+
+            <ForoItem key={data.id} id={data.id} message={data.textMessage}/>
             <IconButton
                 aria-label="expand row"
                 size="small"
