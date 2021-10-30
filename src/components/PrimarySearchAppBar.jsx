@@ -12,7 +12,11 @@ import Menu from '@mui/material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import Arrow from '@mui/icons-material/ArrowForward';
 import MoreIcon from '@mui/icons-material/MoreVert';
+
+import { collection, getDocs } from 'firebase/firestore';
+import db from '../config/firebase/firebase';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -26,7 +30,7 @@ const Search = styled('div')(({ theme }) => ({
   width: '100%',
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(8),
-    width: '30%',
+    width: '40%',
   },
 }));
 
@@ -78,6 +82,23 @@ export default function PrimarySearchAppBar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handleSearch = async(event) => {
+    const usuarios = await getDocs(collection(db,'usuarios'))
+    usuarios.docs.forEach(user => {
+        console.log(user.data().nombre);
+        if(user.data().nombre == document.getElementById('searchName').textContent.toString()){
+            console.log('Encontre al user');
+            //Aqui deberia abrir la ventana con la información del usuario
+        } else {
+            console.log(document.getElementById('searchName').textContent);
+        }
+    })
+  };
+
+  const handleLogout = () => {
+    console.log("Salió");
+  };
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -95,8 +116,8 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Mi perfil</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Cerrar sesión</MenuItem>
+      <MenuItem disabled>Mi perfil</MenuItem>
+      <MenuItem onClick={handleLogout}>Salir</MenuItem>
     </Menu>
   );
 
@@ -161,9 +182,16 @@ export default function PrimarySearchAppBar() {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
+              id='searchName'
               placeholder="Buscar Usuario..."
               inputProps={{ 'aria-label': 'search' }}
             />
+            <IconButton
+              onClick={handleSearch}
+              color="inherit"
+            >
+              <Arrow />
+            </IconButton>
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
