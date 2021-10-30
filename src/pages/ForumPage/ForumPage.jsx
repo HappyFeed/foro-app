@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { collection, getDocs } from 'firebase/firestore';
 import db from "../../config/firebase/firebase"
+import ForoMessage from "../../components/ForoComponent/ForoMessage/ForoMessage"
 
 
 const PatientsView = () => {
@@ -19,10 +20,7 @@ const PatientsView = () => {
   return (
     <div className="patientsView">
       <Box>
-        <Typography variant="h4" gutterBottom component="div" sx={{marginTop:10}}>
-          Pacientes
-        </Typography>
-
+        <ForoMessage />
       </Box>  
         
     </div>
