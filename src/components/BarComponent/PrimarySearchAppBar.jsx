@@ -16,6 +16,8 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import { collection, getDocs } from 'firebase/firestore';
 import db from '../../config/firebase/firebase';
 
+import UserInfoModal from '../ModalComponent/UserInfoModal';
+
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
