@@ -1,6 +1,6 @@
 import './App.css';
 import ForumPage from "./pages/ForumPage/ForumPage"
-import PrimarySearchAppBar from './components/PrimarySearchAppBar';
+import PrimarySearchAppBar from './components/BarComponent/PrimarySearchAppBar';
 import React from 'react';
 
 

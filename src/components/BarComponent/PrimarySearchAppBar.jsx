@@ -16,7 +16,7 @@ import Arrow from '@mui/icons-material/ArrowForward';
 import MoreIcon from '@mui/icons-material/MoreVert';
 
 import { collection, getDocs } from 'firebase/firestore';
-import db from '../config/firebase/firebase';
+import db from '../../config/firebase/firebase';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -86,11 +86,12 @@ export default function PrimarySearchAppBar() {
     const usuarios = await getDocs(collection(db,'usuarios'))
     usuarios.docs.forEach(user => {
         console.log(user.data().nombre);
-        if(user.data().nombre == document.getElementById('searchName').textContent.toString()){
-            console.log('Encontre al user');
+        if(user.data().nombre == document.getElementById('searchName').value){
+            console.log('Encontré al user');
             //Aqui deberia abrir la ventana con la información del usuario
         } else {
-            console.log(document.getElementById('searchName').textContent);
+            console.log('Este user no es');
+            //Aqui podria soltar un aviso de que el user no existe
         }
     })
   };
