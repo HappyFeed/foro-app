@@ -12,11 +12,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Arrow from '@mui/icons-material/ArrowForward';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import Modal from '@mui/material/Modal';
 
 import { collection, getDocs } from 'firebase/firestore';
 import db from '../../config/firebase/firebase';
-
-import UserInfoModal from '../ModalComponent/UserInfoModal';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -58,12 +57,26 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
 export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [openModal, setOpenModal] = React.useState(false);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const isModalOpen = Boolean(openModal);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -78,6 +91,14 @@ export default function PrimarySearchAppBar() {
     handleMobileMenuClose();
   };
 
+  const handleModalClose = () => {
+    setOpenModal(false);
+  }
+
+  const handleModalOpen = () => {
+    setOpenModal(true);
+  };
+
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
@@ -88,6 +109,7 @@ export default function PrimarySearchAppBar() {
         console.log(user.data().nombre);
         if(user.data().nombre == document.getElementById('searchName').value){
             console.log('Encontré al user');
+            handleModalOpen();
             //Aqui deberia abrir la ventana con la información del usuario
         } else {
             console.log('Este user no es');
@@ -99,6 +121,24 @@ export default function PrimarySearchAppBar() {
   const handleLogout = () => {
     console.log("Salió");
   };
+
+  const renderModal = (
+    <Modal
+    open={isModalOpen}
+    onClose={handleModalClose}
+    aria-labelledby="modal-modal-title"
+    aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Usuario: 
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Nombre: 
+          </Typography>
+        </Box>
+    </Modal>
+  );
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -182,6 +222,7 @@ export default function PrimarySearchAppBar() {
               <Arrow />
             </IconButton>
           </Search>
+          {renderModal}
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
@@ -212,6 +253,7 @@ export default function PrimarySearchAppBar() {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
+      {renderModal}
     </Box>
   );
 }
