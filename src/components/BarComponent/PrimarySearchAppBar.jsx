@@ -73,10 +73,12 @@ export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [openModal, setOpenModal] = React.useState(false);
+  const [userInfoArray, setUserInfo] = React.useState(["El usuario no exite","","","", ""]);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const isModalOpen = Boolean(openModal);
+  const userInfo = (userInfoArray);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -95,7 +97,8 @@ export default function PrimarySearchAppBar() {
     setOpenModal(false);
   }
 
-  const handleModalOpen = () => {
+  const handleModalOpen = (info) => {
+    setUserInfo(info);
     setOpenModal(true);
   };
 
@@ -109,7 +112,8 @@ export default function PrimarySearchAppBar() {
         console.log(user.data().nombre);
         if(user.data().nombre == document.getElementById('searchName').value){
             console.log('Encontré al user');
-            handleModalOpen();
+            var info = [user.data().nombre, user.data().apellido, user.data().email, user.data().activo, user.data().mensajes];
+            handleModalOpen(info);
             //Aqui deberia abrir la ventana con la información del usuario
         } else {
             console.log('Este user no es');
@@ -124,17 +128,21 @@ export default function PrimarySearchAppBar() {
 
   const renderModal = (
     <Modal
+    userInfo={userInfo}
     open={isModalOpen}
     onClose={handleModalClose}
     aria-labelledby="modal-modal-title"
     aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Usuario: 
+          <Typography id="modal-modal-title" variant="h7" component="h1">
+            Usuario: {userInfo[0]}
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Nombre: 
+          <Typography id="modal-modal-description" variant="h7" component="h3" sx={{ mt: 2 }}>
+            Apellido: {userInfo[1]} <br></br>
+            Email: {userInfo[2]} <br></br>
+            Activo: {userInfo[3]} <br></br>
+            Mensajes: {userInfo[4]} <br></br>
           </Typography>
         </Box>
     </Modal>
@@ -253,7 +261,6 @@ export default function PrimarySearchAppBar() {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
-      {renderModal}
     </Box>
   );
 }
