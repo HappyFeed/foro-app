@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import "./Login.css"
+import AppContext from "../../context/AppContext"
 
-import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Input from '@mui/material/Input';
 import Button from '@mui/material/Button';
 
 import { useAuth } from '../../context/AuthContext';
 
+import { auth } from '../../config/firebase/firebase';
+
 
 
 export const Login = () => {
+  const state = useContext(AppContext);
 
   const { login } = useAuth();
   const [error, setError] = useState('');
@@ -29,6 +31,7 @@ export const Login = () => {
     e.preventDefault();
     try {
       await login(email, password);
+      state.getUser(auth.currentUser.uid)
       history.push('/');
     } catch (error) {
       setError('Datos incorrectos');

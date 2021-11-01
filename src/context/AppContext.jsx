@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import * as uuid from "uuid";
 import { db } from "../config/firebase/firebase"
-import { collection, query, where, deleteDoc, doc , setDoc, getDocs, getDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc , setDoc, getDocs, getDoc } from "firebase/firestore";
 import md5 from 'md5';
 import { auth } from '../config/firebase/firebase';
 
@@ -78,9 +78,13 @@ export const AppContextWrapper = (props) => {
     return datos.data().user
   }
 
-  const setUser = (id, newName, newLastName) => {
-    users.name = newName
-    users.lastName = newLastName
+  const setUser = ( newName, newLastName) => {
+    if(newName !== ""){
+      users.name = newName
+    }
+    if(newLastName !== ""){
+      users.lastName = newLastName
+    }
     postUserBD(users)
   };
 

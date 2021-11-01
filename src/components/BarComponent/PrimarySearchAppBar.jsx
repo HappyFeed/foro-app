@@ -11,17 +11,15 @@ import Menu from '@mui/material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Arrow from '@mui/icons-material/ArrowForward';
-import MoreIcon from '@mui/icons-material/MoreVert';
 import Modal from '@mui/material/Modal';
 import AppContext from "../../context/AppContext";
 
 import { collection, getDocs } from 'firebase/firestore';
 import {db }  from '../../config/firebase/firebase';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 import { auth } from '../../config/firebase/firebase';
-import { WindowRounded } from "@mui/icons-material";
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -110,10 +108,6 @@ export default function PrimarySearchAppBar() {
     setOpenModal(true);
   };
 
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
-
   const handleSearch = async() => {
     const datos = await getDocs(collection(db,'usuarios'))
     var flag = false
@@ -127,6 +121,7 @@ export default function PrimarySearchAppBar() {
     })
     if(!flag){
       window.alert("Usuario no existente")
+      setNameSearch("")
     }
 
   };
@@ -135,6 +130,14 @@ export default function PrimarySearchAppBar() {
     try {
       await logout();
       history.push('/login');
+    } catch (error) {
+      setError('Server Error')
+    }
+  }
+
+  const handleEdit = () =>{
+    try {
+      history.push('/edit');
     } catch (error) {
       setError('Server Error')
     }
@@ -176,7 +179,7 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem disabled>Mi perfil</MenuItem>
+      <MenuItem onClick={handleEdit}>Mi perfil</MenuItem>
       <MenuItem onClick={handleLogout}>Salir</MenuItem>
     </Menu>
   );
@@ -234,13 +237,12 @@ export default function PrimarySearchAppBar() {
               onChange= {(event)=> setNameSearch(event.target.value)}
               id='searchName'
               placeholder="Buscar Usuario..."
-
+              value={nameSearch}
             />
           </Search>
           <IconButton
               onClick={handleSearch}
               color="inherit"
-              disable={nameSearch===""}
             >
               <Arrow />
             </IconButton>
@@ -261,18 +263,6 @@ export default function PrimarySearchAppBar() {
               <AccountCircle />
             </IconButton>
 
-          </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
           </Box>
         </Toolbar>
       </AppBar>

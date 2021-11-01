@@ -6,6 +6,7 @@ import React from 'react';
 
 import { Login } from './components/Login/Login';
 import { SignUp } from './components/SignUp/SignUp';
+import { Edit } from "./components/Edit/Edit"
 
 import { AuthProvider } from './context/AuthContext';
 
@@ -25,6 +26,7 @@ function App() {
             <PrivateRoute exact path='/' component={ForumPage} />         
             <Route exact path='/login' component={Login} />
             <Route exact path='/signup' component={SignUp} />
+            <PrivateRoute exact path='/edit' component={Edit}/>
           </Switch>
         </AuthProvider>
       </Router>
