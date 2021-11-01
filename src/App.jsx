@@ -19,12 +19,11 @@ function App() {
   return ( 
 
       <AppContextWrapper>
-      
+
       <Router>
         <AuthProvider>
           <Switch>
-            <PrivateRoute exact path='/' component={ForumPage} />
-            
+            <PrivateRoute exact path='/' component={ForumPage} />         
             <Route exact path='/login' component={Login} />
             <Route exact path='/signup' component={SignUp} />
           </Switch>
