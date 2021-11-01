@@ -1,30 +1,29 @@
 import React, { useContext, useEffect } from "react";
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { collection, getDocs } from 'firebase/firestore';
+import ForoContainer from "../../components/ForoComponent/ForoContainer/ForoContainer"
+import AppContext from "../../store/AppContext"
+import { collection, getDocs, doc } from "firebase/firestore";
 import db from "../../config/firebase/firebase"
 
-
 const PatientsView = () => {
+  const state = useContext(AppContext);
 
-  const obtenerDatos = async() => {
-    const datos = await getDocs(collection(db,'videos'))
-    console.log(datos.docs[0].data());
+  const getMessages = async() => {
+    const datos = await getDocs(collection(db,'messages'))
+    const messages = []
+    datos.forEach((documento) => {
+      messages.push(documento.data())
+    })
+    state.setMessages(messages)
   }
 
   useEffect(() => {
-    obtenerDatos();
-  },[]);
+    getMessages()
+  }, []);
 
   return (
     <div className="patientsView">
-      <Box>
-        <Typography variant="h4" gutterBottom component="div" sx={{marginTop:10}}>
-          Pacientes
-        </Typography>
-
-      </Box>  
-        
+      <ForoContainer />
     </div>
   );
 };

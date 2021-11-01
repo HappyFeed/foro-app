@@ -6,13 +6,16 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import Arrow from '@mui/icons-material/ArrowForward';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import Modal from '@mui/material/Modal';
+
+import { collection, getDocs } from 'firebase/firestore';
+import db from '../../config/firebase/firebase';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -26,7 +29,7 @@ const Search = styled('div')(({ theme }) => ({
   width: '100%',
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(8),
-    width: '30%',
+    width: '40%',
   },
 }));
 
@@ -54,12 +57,28 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
 export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [openModal, setOpenModal] = React.useState(false);
+  const [userInfoArray, setUserInfo] = React.useState(["El usuario no exite","","","", ""]);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const isModalOpen = Boolean(openModal);
+  const userInfo = (userInfoArray);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -74,9 +93,60 @@ export default function PrimarySearchAppBar() {
     handleMobileMenuClose();
   };
 
+  const handleModalClose = () => {
+    setOpenModal(false);
+  }
+
+  const handleModalOpen = (info) => {
+    setUserInfo(info);
+    setOpenModal(true);
+  };
+
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
+
+  const handleSearch = async(event) => {
+    const usuarios = await getDocs(collection(db,'usuarios'))
+    usuarios.docs.forEach(user => {
+        console.log(user.data().nombre);
+        if(user.data().nombre == document.getElementById('searchName').value){
+            console.log('Encontré al user');
+            var info = [user.data().nombre, user.data().apellido, user.data().email, user.data().activo, user.data().mensajes];
+            handleModalOpen(info);
+            //Aqui deberia abrir la ventana con la información del usuario
+        } else {
+            console.log('Este user no es');
+            //Aqui podria soltar un aviso de que el user no existe
+        }
+    })
+  };
+
+  const handleLogout = () => {
+    console.log("Salió");
+  };
+
+  const renderModal = (
+    <Modal
+    userInfo={userInfo}
+    open={isModalOpen}
+    onClose={handleModalClose}
+    aria-labelledby="modal-modal-title"
+    aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h7" component="h1">
+            Usuario: {userInfo[0]}
+          </Typography>
+          <Typography id="modal-modal-description" variant="h7" component="h3" sx={{ mt: 2 }}>
+            Apellido: {userInfo[1]} <br></br>
+            Email: {userInfo[2]} <br></br>
+            Activo: {userInfo[3]} <br></br>
+            Mensajes: {userInfo[4]} <br></br>
+          </Typography>
+        </Box>
+    </Modal>
+  );
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -95,8 +165,8 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Mi perfil</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Cerrar sesión</MenuItem>
+      <MenuItem disabled>Mi perfil</MenuItem>
+      <MenuItem onClick={handleLogout}>Salir</MenuItem>
     </Menu>
   );
 
@@ -117,18 +187,6 @@ export default function PrimarySearchAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           size="large"
@@ -161,21 +219,20 @@ export default function PrimarySearchAppBar() {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
+              id='searchName'
               placeholder="Buscar Usuario..."
               inputProps={{ 'aria-label': 'search' }}
             />
-          </Search>
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
+              onClick={handleSearch}
               color="inherit"
             >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
+              <Arrow />
             </IconButton>
+          </Search>
+          {renderModal}
+          <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
               size="large"
               edge="end"

@@ -1,6 +1,8 @@
 import './App.css';
 import ForumPage from "./pages/ForumPage/ForumPage"
-import PrimarySearchAppBar from './components/PrimarySearchAppBar';
+import { AppContextWrapper } from "./store/AppContext";
+import PrimarySearchAppBar from './components/BarComponent/PrimarySearchAppBar';
+
 import React from 'react';
 
 import { Login } from './components/Login';
@@ -15,8 +17,10 @@ import { PrivateRoute } from './components/PrivateRoute';
 
 
 function App() {
-  return (
-    <>
+  return ( 
+
+      <AppContextWrapper>
+      
       <Router>
         <AuthProvider>
           <Switch>
@@ -27,8 +31,9 @@ function App() {
           </Switch>
         </AuthProvider>
       </Router>
-    </>
-  );
+    
+      </AppContextWrapper>
+  )
 }
 
 export default App;
