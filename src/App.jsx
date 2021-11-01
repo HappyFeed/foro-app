@@ -1,18 +1,17 @@
 import './App.css';
 import ForumPage from "./pages/ForumPage/ForumPage"
-import { AppContextWrapper } from "./store/AppContext";
+import { AppContextWrapper } from "./context/AppContext";
 import PrimarySearchAppBar from './components/BarComponent/PrimarySearchAppBar';
 
 import React from 'react';
 
-import { Login } from './components/Login';
-import { SignUp } from './components/SignUp';
-import { Home } from './components/Home';
+import { Login } from './components/Login/Login';
+import { SignUp } from './components/SignUp/SignUp';
 
-import { AuthProvider } from './context/AuthContext.js';
+import { AuthProvider } from './context/AuthContext';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { PrivateRoute } from './components/PrivateRoute';
+import { PrivateRoute } from './components/PrivateRoute/PrivateRoute';
 
 
 

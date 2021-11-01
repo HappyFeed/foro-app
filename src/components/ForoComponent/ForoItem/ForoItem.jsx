@@ -3,7 +3,7 @@ import "./ForoItem.css";
 import Card from '@mui/material/Card';
 import IconButton from '@mui/material/IconButton';
 import { useContext } from "react";
-import AppContext from "../../../store/AppContext";
+import AppContext from "../../../context/AppContext";
 import { useState } from "react";
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';

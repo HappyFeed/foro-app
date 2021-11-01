@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import "./ForoForm.css";
-import AppContext from "../../../store/AppContext";
+import AppContext from "../../../context/AppContext";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import SaveIcon from '@mui/icons-material/Save';

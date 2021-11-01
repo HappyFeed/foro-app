@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext, useEffect, useState } from "react";
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -16,6 +16,8 @@ import Modal from '@mui/material/Modal';
 
 import { collection, getDocs } from 'firebase/firestore';
 import db from '../../config/firebase/firebase';
+import { useHistory } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -80,6 +82,11 @@ export default function PrimarySearchAppBar() {
   const isModalOpen = Boolean(openModal);
   const userInfo = (userInfoArray);
 
+  const { logout, currentUser } = useAuth();
+  const history = useHistory();
+
+  const [error, setError] = useState('');
+
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -122,9 +129,14 @@ export default function PrimarySearchAppBar() {
     })
   };
 
-  const handleLogout = () => {
-    console.log("Salió");
-  };
+  const handleLogout = async () => {
+    try {
+      await logout();
+      history.push('/login');
+    } catch (error) {
+      setError('Server Error')
+    }
+  }
 
   const renderModal = (
     <Modal

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import AppContext from "../../../store/AppContext";
+import AppContext from "../../../context/AppContext";
 import "./ForoMessage.css";
 import Box from '@mui/material/Box';
 import ForoItem from "../ForoItem/ForoItem"

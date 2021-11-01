@@ -1,12 +1,13 @@
 import React, { useState , useEffect} from "react";
 import * as uuid from "uuid";
-import  db  from "../config/firebase/firebase"
+import { db } from "../config/firebase/firebase"
 import { collection, deleteDoc, doc , setDoc, getDocs } from "firebase/firestore";
 
 const AppContext = React.createContext();
 
 export const AppContextWrapper = (props) => {
   const [messages, setMessages] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const getMessages = async() => {
     const datos = await getDocs(collection(db,'messages'))
@@ -54,11 +55,65 @@ export const AppContextWrapper = (props) => {
     postBD(newTask);
   };
 
-
-
   const deleteMessage = async (messageId) => {
     await deleteDoc(doc(db, "messages", messageId));
     getMessages()
+  };
+
+  ////////////////////////////////////////////////////////////////////
+
+  const getUser = async(userId) => {
+    const datos = await getDocs(doc(db,'usuarios', userId))
+    const usuarios = []
+    datos.forEach((documento) => {
+      usuarios.push(documento.data().user)
+    })
+    setUsers(users)
+  }
+
+  const setUser = (id, newName, newLastName) => {
+    const userUpdate = users.map((user) => {
+      if (user.id === id) {
+        
+        return {
+          ...user,
+          name: newName,
+          lastName: newLastName
+        };
+      }
+      return user;
+    });
+  
+    postUserBD(userUpdate.find( element => element.id === id));
+  };
+
+  const postUserBD = async(user) =>{
+    try {
+      await setDoc(doc(db, "usuarios", user.id), 
+      {user});
+      getUser(user.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  }
+
+
+  const saveUser = (userName, userLastName, userEmail, userPassword) => {
+    const newUser = {
+      id: uuid.v1(),
+      name: userName,
+      lastName: userLastName,
+      email: userEmail,
+      password: userPassword
+    };
+
+    postBD(newUser);
+  };
+
+
+
+  const deleteUser = async (userId) => {
+    await deleteDoc(doc(db, "usuarios", userId));
   };
 
   const state = {
@@ -67,7 +122,14 @@ export const AppContextWrapper = (props) => {
     setMessageText,
     saveMessage,
     deleteMessage,
-    getMessages
+    getMessages,
+    users,
+    setUsers,
+    getUser,
+    setUser,
+    saveUser,
+    deleteUser
+
   };
 
   return (

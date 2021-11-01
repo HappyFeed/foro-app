@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import AppContext from "../../../store/AppContext";
+import AppContext from "../../../context/AppContext";
 import "./ForoContainer.css";
 import ForoMessage from "../ForoMessage/ForoMessage"
 import ForoForm from "../ForoForm/ForoForm"
