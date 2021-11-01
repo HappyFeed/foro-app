@@ -16,11 +16,12 @@ import Modal from '@mui/material/Modal';
 import AppContext from "../../context/AppContext";
 
 import { collection, getDocs } from 'firebase/firestore';
-import db from '../../config/firebase/firebase';
+import {db }  from '../../config/firebase/firebase';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 import { auth } from '../../config/firebase/firebase';
+import { WindowRounded } from "@mui/icons-material";
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -52,13 +53,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '38ch',
-    },
+
   },
 }));
 
@@ -77,15 +73,16 @@ const style = {
 export default function PrimarySearchAppBar() {
   const state = useContext(AppContext);
 
+  const [nameSearch, setNameSearch] = useState("");
+  const [userArray, setUserArray] = useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [openModal, setOpenModal] = React.useState(false);
-  const [userInfoArray, setUserInfo] = React.useState(["El usuario no exite","","","", ""]);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const isModalOpen = Boolean(openModal);
-  const userInfo = (userInfoArray);
+
 
   const { logout } = useAuth();
   const history = useHistory();
@@ -109,8 +106,7 @@ export default function PrimarySearchAppBar() {
     setOpenModal(false);
   }
 
-  const handleModalOpen = (info) => {
-    setUserInfo(info);
+  const handleModalOpen = () => {
     setOpenModal(true);
   };
 
@@ -118,20 +114,21 @@ export default function PrimarySearchAppBar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const handleSearch = async(event) => {
-    const usuarios = await getDocs(collection(db,'usuarios'))
-    usuarios.docs.forEach(user => {
-        console.log(user.data().nombre);
-        if(user.data().nombre === document.getElementById('searchName').value){
-            console.log('Encontré al user');
-            var info = [user.data().nombre, user.data().apellido, user.data().email, user.data().activo, user.data().mensajes];
-            handleModalOpen(info);
-            //Aqui deberia abrir la ventana con la información del usuario
-        } else {
-            console.log('Este user no es');
-            //Aqui podria soltar un aviso de que el user no existe
-        }
+  const handleSearch = async() => {
+    const datos = await getDocs(collection(db,'usuarios'))
+    var flag = false
+    datos.forEach((documento) => {
+      if(documento.data().user.name === nameSearch){
+        setUserArray([documento.data().user.name, documento.data().user.lastName, documento.data().user.email])
+        handleModalOpen()
+        flag = true;
+        setNameSearch("")
+      }
     })
+    if(!flag){
+      window.alert("Usuario no existente")
+    }
+
   };
 
   const handleLogout = async () => {
@@ -145,7 +142,6 @@ export default function PrimarySearchAppBar() {
 
   const renderModal = (
     <Modal
-    userInfo={userInfo}
     open={isModalOpen}
     onClose={handleModalClose}
     aria-labelledby="modal-modal-title"
@@ -153,13 +149,11 @@ export default function PrimarySearchAppBar() {
     >
       <Box sx={style}>
           <Typography id="modal-modal-title" variant="h7" component="h1">
-            Usuario: {userInfo[0]}
+            Usuario: {userArray[0]}
           </Typography>
           <Typography id="modal-modal-description" variant="h7" component="h3" sx={{ mt: 2 }}>
-            Apellido: {userInfo[1]} <br></br>
-            Email: {userInfo[2]} <br></br>
-            Activo: {userInfo[3]} <br></br>
-            Mensajes: {userInfo[4]} <br></br>
+            Apellido: {userArray[1]} <br></br>
+            Email:{userArray[2]} <br></br>
           </Typography>
         </Box>
     </Modal>
@@ -231,23 +225,25 @@ export default function PrimarySearchAppBar() {
           >
             FORO - APP
           </Typography>
+          {renderModal}
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
+              onChange= {(event)=> setNameSearch(event.target.value)}
               id='searchName'
               placeholder="Buscar Usuario..."
-              inputProps={{ 'aria-label': 'search' }}
+
             />
           </Search>
           <IconButton
               onClick={handleSearch}
               color="inherit"
+              disable={nameSearch===""}
             >
               <Arrow />
             </IconButton>
-          {renderModal}
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'flex', md: 'flex' } }}>
             <Typography id="modal-modal-title" variant="h7" component="h1">
@@ -264,6 +260,7 @@ export default function PrimarySearchAppBar() {
             >
               <AccountCircle />
             </IconButton>
+
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton

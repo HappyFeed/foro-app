@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import * as uuid from "uuid";
 import { db } from "../config/firebase/firebase"
-import { collection, deleteDoc, doc , setDoc, getDocs, getDoc } from "firebase/firestore";
+import { collection, query, where, deleteDoc, doc , setDoc, getDocs, getDoc } from "firebase/firestore";
 import md5 from 'md5';
 import { auth } from '../config/firebase/firebase';
 
@@ -10,6 +10,7 @@ const AppContext = React.createContext();
 export const AppContextWrapper = (props) => {
   const [messages, setMessages] = useState([]);
   const [users, setCurrentUser] = useState(null);
+  const [userSearch, setUserSearch] = useState(null);
 
   const getMessages = async() => {
     const datos = await getDocs(collection(db,'messages'))
@@ -83,6 +84,8 @@ export const AppContextWrapper = (props) => {
     postUserBD(users)
   };
 
+
+
   const postUserBD = async(user) =>{
     try {
       await setDoc(doc(db, "usuarios", user.id), 
@@ -125,7 +128,9 @@ export const AppContextWrapper = (props) => {
     setUser,
     saveUser,
     deleteUser,
-    findUser
+    findUser,
+    userSearch,
+    setUserSearch
 
   };
 
