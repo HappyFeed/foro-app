@@ -53,11 +53,14 @@ export const Login = () => {
     width:300
   }
 
+
+
   return (
-    <Box sx={style}>
+    <Box className="background">
+      <Box sx={style}>
         <Box >
           {error && <p className='error' >{error}</p>}
-          <Typography id="modal-modal-title" variant="h2" component="h1">
+          <Typography sx={{textAlign:'center'}} id="modal-modal-title" variant="h2" component="h1">
               Iniciar Sesion
             </Typography>
         </Box>
@@ -74,6 +77,8 @@ export const Login = () => {
           
           <p>No tienes una cuenta? <Link to='/signup'>Registrate</Link> </p>
         </Box>
-    </Box>  
+      </Box>  
+    </Box>
+    
   )
 }
