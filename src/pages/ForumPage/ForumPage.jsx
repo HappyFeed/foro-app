@@ -8,17 +8,8 @@ import db from "../../config/firebase/firebase"
 const PatientsView = () => {
   const state = useContext(AppContext);
 
-  const getMessages = async() => {
-    const datos = await getDocs(collection(db,'messages'))
-    const messages = []
-    datos.forEach((documento) => {
-      messages.push(documento.data())
-    })
-    state.setMessages(messages)
-  }
-
   useEffect(() => {
-    getMessages()
+    state.getMessages()
   }, []);
 
   return (

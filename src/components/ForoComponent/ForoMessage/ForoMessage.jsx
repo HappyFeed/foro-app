@@ -14,12 +14,10 @@ const ForoContainer = ({data}) => {
   const state = useContext(AppContext);
   const [open, setOpen] = React.useState(false);
 
-
   return (
     <div className="taskContainer">
         <Box>
-
-            <ForoItem key={data.id} id={data.id} message={data.textMessage}/>
+            <ForoItem key={data.id} id={data.id} message={data.textMessage} topic={data.topic}/>
             <IconButton
                 aria-label="expand row"
                 size="small"
@@ -30,7 +28,7 @@ const ForoContainer = ({data}) => {
             <Collapse in={open} timeout="auto" className="collapse" unmountOnExit>
                 <ForoItem />
                 <ForoItem />
-                <ForoForm></ForoForm>
+                <ForoForm flag={false}></ForoForm>
             </Collapse>
         </Box>
         <Divider />

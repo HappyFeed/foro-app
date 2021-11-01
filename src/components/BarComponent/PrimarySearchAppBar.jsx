@@ -232,7 +232,7 @@ export default function PrimarySearchAppBar() {
           </Search>
           {renderModal}
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ display: { xs: 'flex', md: 'flex' } }}>
             <IconButton
               size="large"
               edge="end"
