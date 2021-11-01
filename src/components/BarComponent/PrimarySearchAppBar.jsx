@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, {  useState, useContext} from "react";
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -13,11 +13,14 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import Arrow from '@mui/icons-material/ArrowForward';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import Modal from '@mui/material/Modal';
+import AppContext from "../../context/AppContext";
 
 import { collection, getDocs } from 'firebase/firestore';
 import db from '../../config/firebase/firebase';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+
+import { auth } from '../../config/firebase/firebase';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -72,6 +75,8 @@ const style = {
 };
 
 export default function PrimarySearchAppBar() {
+  const state = useContext(AppContext);
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [openModal, setOpenModal] = React.useState(false);
@@ -235,16 +240,19 @@ export default function PrimarySearchAppBar() {
               placeholder="Buscar Usuario..."
               inputProps={{ 'aria-label': 'search' }}
             />
-            <IconButton
+          </Search>
+          <IconButton
               onClick={handleSearch}
               color="inherit"
             >
               <Arrow />
             </IconButton>
-          </Search>
           {renderModal}
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'flex', md: 'flex' } }}>
+            <Typography id="modal-modal-title" variant="h7" component="h1">
+
+            </Typography>
             <IconButton
               size="large"
               edge="end"

@@ -31,7 +31,7 @@ export const Login = () => {
       await login(email, password);
       history.push('/');
     } catch (error) {
-      setError('Wrong Credentials');
+      setError('Datos incorrectos');
       setTimeout(() => setError(''), 1500);
     }
   }
@@ -59,7 +59,6 @@ export const Login = () => {
     <Box className="background">
       <Box sx={style}>
         <Box >
-          {error && <p className='error' >{error}</p>}
           <Typography sx={{textAlign:'center'}} id="modal-modal-title" variant="h2" component="h1">
               Iniciar Sesion
             </Typography>
