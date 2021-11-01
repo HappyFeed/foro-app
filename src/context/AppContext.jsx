@@ -2,6 +2,7 @@ import React, { useState , useEffect} from "react";
 import * as uuid from "uuid";
 import { db } from "../config/firebase/firebase"
 import { collection, deleteDoc, doc , setDoc, getDocs } from "firebase/firestore";
+import md5 from 'md5';
 
 const AppContext = React.createContext();
 
@@ -104,10 +105,10 @@ export const AppContextWrapper = (props) => {
       name: userName,
       lastName: userLastName,
       email: userEmail,
-      password: userPassword
+      password: md5(userPassword)
     };
 
-    postBD(newUser);
+    postUserBD(newUser);
   };
 
 
