@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import AppContext from "../../../context/AppContext";
 import "./ForoContainer.css";
 import ForoMessage from "../ForoMessage/ForoMessage"
@@ -10,14 +10,21 @@ const ForoContainer = () => {
 
   return (
     <div className="taskContainer">
-      <ForoForm flag={true}/>
+      <ForoForm flag={true} father={""}/>
       {state.messages.map((message, index) => {
-        return (
-          <ForoMessage
-            key={index}
-            data={message}
-          />
-        );
+        if(message.father === ""){
+          return (
+            <ForoMessage
+              key={message.id}
+              data={message}
+            />
+          );
+        }else{
+          return(
+            <div key={message.id}></div>
+          )          
+        }
+
       })}
     </div>
   );

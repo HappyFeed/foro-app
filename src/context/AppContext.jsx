@@ -1,14 +1,15 @@
-import React, { useState , useEffect} from "react";
+import React, { useState } from "react";
 import * as uuid from "uuid";
 import { db } from "../config/firebase/firebase"
-import { collection, deleteDoc, doc , setDoc, getDocs } from "firebase/firestore";
+import { collection, deleteDoc, doc , setDoc, getDocs, getDoc } from "firebase/firestore";
 import md5 from 'md5';
+import { auth } from '../config/firebase/firebase';
 
 const AppContext = React.createContext();
 
 export const AppContextWrapper = (props) => {
   const [messages, setMessages] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [users, setCurrentUser] = useState(null);
 
   const getMessages = async() => {
     const datos = await getDocs(collection(db,'messages'))
@@ -45,15 +46,16 @@ export const AppContextWrapper = (props) => {
   }
 
 
-  const saveMessage = (textMessage, textTopic) => {
-    const newTask = {
+  const saveMessage = (textMessage, textTopic, idFather) => {
+    const newMessage = {
       id: uuid.v1(),
-      userId: uuid.v1(),
+      userId: auth.currentUser.uid,
       textMessage,
-      topic: textTopic
+      topic: textTopic,
+      father: idFather
     };
 
-    postBD(newTask);
+    postBD(newMessage);
   };
 
   const deleteMessage = async (messageId) => {
@@ -64,28 +66,20 @@ export const AppContextWrapper = (props) => {
   ////////////////////////////////////////////////////////////////////
 
   const getUser = async(userId) => {
-    const datos = await getDocs(doc(db,'usuarios', userId))
-    const usuarios = []
-    datos.forEach((documento) => {
-      usuarios.push(documento.data().user)
-    })
-    setUsers(users)
+    const datos = await getDoc(doc(db,'usuarios', userId))
+    setCurrentUser(datos.data().user)
+    
+  }
+
+  const findUser = async(userId) => {
+    const datos = await getDoc(doc(db,'usuarios', userId))
+    return datos.data().user
   }
 
   const setUser = (id, newName, newLastName) => {
-    const userUpdate = users.map((user) => {
-      if (user.id === id) {
-        
-        return {
-          ...user,
-          name: newName,
-          lastName: newLastName
-        };
-      }
-      return user;
-    });
-  
-    postUserBD(userUpdate.find( element => element.id === id));
+    users.name = newName
+    users.lastName = newLastName
+    postUserBD(users)
   };
 
   const postUserBD = async(user) =>{
@@ -101,7 +95,7 @@ export const AppContextWrapper = (props) => {
 
   const saveUser = (userName, userLastName, userEmail, userPassword) => {
     const newUser = {
-      id: uuid.v1(),
+      id: auth.currentUser.uid,
       name: userName,
       lastName: userLastName,
       email: userEmail,
@@ -125,11 +119,12 @@ export const AppContextWrapper = (props) => {
     deleteMessage,
     getMessages,
     users,
-    setUsers,
+    setCurrentUser,
     getUser,
     setUser,
     saveUser,
-    deleteUser
+    deleteUser,
+    findUser
 
   };
 

@@ -1,7 +1,6 @@
 import './App.css';
 import ForumPage from "./pages/ForumPage/ForumPage"
 import { AppContextWrapper } from "./context/AppContext";
-import PrimarySearchAppBar from './components/BarComponent/PrimarySearchAppBar';
 
 import React from 'react';
 

@@ -20,7 +20,7 @@ const ForoItem = ({ id, message, topic, flag }) => {
 
   const [isUpdating, setIsUpdating] = useState(false);
   const [text, setText] = useState(message);
-  const [permissions, setPermissions] = useState(flag);
+  const [permissions] = useState(flag);
 
   const handleUpdate = () => {
     setIsUpdating(false);
@@ -29,7 +29,7 @@ const ForoItem = ({ id, message, topic, flag }) => {
 
   return (
     <Box>
-      {topic != "" ? 
+      {topic !== "" ? 
       (
         <Typography
           variant="h6"

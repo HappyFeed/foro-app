@@ -5,15 +5,15 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import SaveIcon from '@mui/icons-material/Save';
 
-const ForoForm = ({ flag }) => {
+const ForoForm = ({ flag, father }) => {
   const state = useContext(AppContext);
   const [text, setText] = useState("");
-  const [type, setType] = useState(flag)
+  const [type] = useState(flag)
   const [topic, setTopic] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    state.saveMessage(text, topic);
+    state.saveMessage(text, topic, father);
     setText("");
     setTopic("");
   };

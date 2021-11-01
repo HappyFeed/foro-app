@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -82,7 +82,7 @@ export default function PrimarySearchAppBar() {
   const isModalOpen = Boolean(openModal);
   const userInfo = (userInfoArray);
 
-  const { logout, currentUser } = useAuth();
+  const { logout } = useAuth();
   const history = useHistory();
 
   const [error, setError] = useState('');
@@ -117,7 +117,7 @@ export default function PrimarySearchAppBar() {
     const usuarios = await getDocs(collection(db,'usuarios'))
     usuarios.docs.forEach(user => {
         console.log(user.data().nombre);
-        if(user.data().nombre == document.getElementById('searchName').value){
+        if(user.data().nombre === document.getElementById('searchName').value){
             console.log('Encontré al user');
             var info = [user.data().nombre, user.data().apellido, user.data().email, user.data().activo, user.data().mensajes];
             handleModalOpen(info);

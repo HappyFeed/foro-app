@@ -10,7 +10,6 @@ export const Login = () => {
 
   const { login } = useAuth();
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const history = useHistory();
 
   const [email, setEmail] = useState('');
@@ -21,13 +20,10 @@ export const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     try {
       await login(email, password);
-      setLoading(false);
       history.push('/');
     } catch (error) {
-      setLoading(false);
       setError('Wrong Credentials');
       setTimeout(() => setError(''), 1500);
     }
