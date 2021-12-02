@@ -17,7 +17,6 @@ import { PrivateRoute } from './components/PrivateRoute/PrivateRoute';
 
 function App() {
   return ( 
-
       <AppContextWrapper>
 
       <Router>
